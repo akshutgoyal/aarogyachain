@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: aarogyachain-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node src/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: MASTER_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+      - key: GEMINI_MODEL_FALLBACKS
+        value: gemini-3.1-pro-preview,gemini-3.5-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite
+      - key: SEPOLIA_RPC_URL
+        value: https://ethereum-sepolia-rpc.publicnode.com
+      - key: CONTRACT_ADDRESS
+        value: 0x464e6963cE0D833193C83Fc8Bd081614B9344b03
+      - key: CONTRACT_DEPLOY_BLOCK
+        value: 11714309
+      - key: AI_VIEWER_ADDRESS
+        value: 0x000000000000000000000000000000000000A1A1
