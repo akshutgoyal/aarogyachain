@@ -1,0 +1,19 @@
+{
+  "projectName": "aarogyachain",
+  "teamName": "Nirvans",
+  "tagline": "patient-owned health records, verifiable by anyone, instantly",
+  "teamMembers": [
+    "Akshut Goyal",
+    "Reedhan Garg",
+    "Harsh Kumar"
+  ],
+  "problemStatement": "Medical records sit fragmented in paper files and private hospital databases — easily tampered with, lost in transfers, and impossible to verify without trusting the holder. Patients have no ownership of their own health data.",
+  "frontend": "React (Vite)",
+  "backend": "Express",
+  "database": "MongoDB",
+  "authentication": "None",
+  "addons": [
+    "TailwindCSS"
+  ],
+  "installDeps": true
+}
