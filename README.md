@@ -5,6 +5,8 @@
 **Team Nirvans** · Akshut Goyal · Reedhan Garg · Harsh Kumar
 **Problem statement:** Blockchain-Based Secure Platform for Identity, Access Control & Digital Asset Management
 
+Live contract (Sepolia): [`0x464e6963cE0D833193C83Fc8Bd081614B9344b03`](https://sepolia.etherscan.io/address/0x464e6963cE0D833193C83Fc8Bd081614B9344b03) · deploy block `11714309`
+
 ---
 
 ## The problem
@@ -38,7 +40,7 @@ for free, without trusting us.**
 | **Contract** | Solidity 0.8.24, OpenZeppelin ERC-721 + AccessControl, ERC-5192 soulbound. Deployed and live on Sepolia at [`0x464e6963cE0D833193C83Fc8Bd081614B9344b03`](https://sepolia.etherscan.io/address/0x464e6963cE0D833193C83Fc8Bd081614B9344b03) |
 | **Frontend** | React 18 + Vite 6 + Tailwind 3 + ethers v6 — one console per role |
 | **Backend** | Express 4 + Mongoose 8 — serves ciphertext, indexes the chain, and holds the AI key |
-| **AI** | Gemini 3.8 Flash, behind the contract's own consent gate |
+| **AI** | Gemini 3.6 Flash (with Flash/Pro fallbacks), behind the contract's own consent gate |
 | **Storage** | Encrypted blobs on disk, behind an interface that IPFS drops into |
 
 ---
@@ -137,22 +139,61 @@ in us. Try it on `/verify` with no wallet connected at all.
 
 ## Running it
 
+### Prerequisites
+
+- **Node.js 18+** and **npm** (check with `node --version`).
+- **MetaMask** (or any injected Ethereum wallet), pointed at the **Sepolia** testnet.
+  Sepolia ETH for gas is free from a faucet such as
+  [Google Cloud's Sepolia faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia).
+- A **Gemini API key** from [Google AI Studio](https://aistudio.google.com/apikey)
+  (free tier works; the default model is `gemini-3.6-flash` with automatic fallbacks).
+- **MongoDB is optional.** The API boots with no database and rebuilds record metadata
+  from chain logs. A free Atlas M0 cluster makes reads faster (see below).
+
+### 1. Clone and install
+
 ```bash
+git clone https://github.com/akshutgoyal/aarogyachain.git
+cd aarogyachain
 npm install
-cp server/.env.example server/.env     # then fill in GEMINI_API_KEY and MASTER_KEY
-npm run dev:server                     # http://localhost:5000
-npm run dev:client                     # http://localhost:5173   (second terminal)
 ```
 
-Generate a master key with:
+### 2. Configure the server
 
 ```bash
+cp server/.env.example server/.env     # then edit server/.env
+```
+
+The two values you must fill in:
+
+```bash
+# Generate one with the command below — 64 hex chars that seal each record's content key
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-**MongoDB is optional.** With no `DATABASE_URL`, or with Mongo switched off, the API
-starts anyway and rebuilds record metadata straight from chain logs. To populate the
-cache deliberately, run `npm run index`.
+```env
+GEMINI_API_KEY=paste-your-key-here
+MASTER_KEY=paste-the-generated-hex-here
+```
+
+Chain values (`SEPOLIA_RPC_URL`, `CONTRACT_ADDRESS`, `CONTRACT_DEPLOY_BLOCK`) and the
+AI viewer address are already correct in the example file — leave them as they are
+unless you deploy your own contract.
+
+### 3. Start it (two terminals)
+
+```bash
+npm run start:server                   # http://localhost:5000  (API)
+npm run dev:client                     # http://localhost:5173  (site, second terminal)
+```
+
+Open `http://localhost:5173`, press **Access Dashboard**, and connect MetaMask on
+Sepolia — or use **View demo** below the connect button to explore every console
+with no wallet at all.
+
+**MongoDB is optional.** With no `DATABASE_URL` the API starts anyway and rebuilds
+record metadata straight from chain logs. To populate the cache deliberately, run
+`npm run index`.
 
 Check the database connection at any time:
 
@@ -161,14 +202,21 @@ npm run ping     # reports host, database, collections and doc counts —
                  # and names the fix for the three Atlas errors that actually happen
 ```
 
-### Connecting MongoDB Atlas
+### 4. (Optional) Connect MongoDB Atlas
+
+MongoDB is a **cache, never the source of truth** — five collections (`Records`,
+`Identities`, `Summaries`, `ChainEvents`, `Profiles`), rebuilt from chain logs at
+any time with `npm run index`. Connection has a short timeout and every write is
+guarded, so the API runs identically with the database off; reads just rebuild
+from chain logs instead. The one deliberate off-chain store is `Profiles`
+(patient-chosen display names), which never touches the chain.
 
 1. Create a free **M0** cluster (AWS, region closest to you).
 2. **Security → Database Access** → add a user with **Read and write to any database**.
 3. **Security → Network Access** → allow your IP. Your home IP changes, so `0.0.0.0/0`
    is a common hackathon trade — acceptable for a throwaway free-tier credential,
    not for real patient data.
-4. **Connect → Drivers → Node.js** and copy the string. Then two edits:
+4. **Connect → Drivers → Node.js** and copy the string. Then one edit:
 
 ```env
 DATABASE_URL=mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/aarogyachain?retryWrites=true&w=majority
@@ -188,30 +236,66 @@ That flag is the honest indicator of which store answered.
 > ever does, the cache has quietly become a source of truth — exactly the failure the
 > architecture exists to prevent. Re-run the consent checks below after any DB change.
 
+## How file storage works, end to end
+
+Encryption is **browser-side only**. Nothing trusts the server with plaintext:
+
+1. **Encrypt (browser).** `client/src/crypto.js` generates a random AES-256-GCM
+   content key, encrypts the file to `iv | ciphertext | tag`, and computes
+   `keccak256(ciphertext)` — the digest. Only that 32-byte digest ever goes on-chain.
+2. **Upload (server).** `POST /api/records` carries `{ tokenId, patient, recordType,
+   contentKey (32-byte hex), ciphertext (base64) }`. The server recomputes
+   `keccak256(ciphertext)` and refuses the write on mismatch, then stores two files
+   beside each other in `server/uploads/` (override with `UPLOAD_DIR`): `<digest>.enc`
+   (ciphertext) + `<digest>.key` (the content key sealed under `MASTER_KEY` as
+   `iv(12) | tag(16) | ciphertext`, base64). The blob is never overwritten — same
+   digest means same bytes. Uploads are capped at 20 MB per record.
+3. **Mint (contract).** The admin's `mintRecord(patient, digest, cid, recordType)` anchors
+   only the digest. The plaintext was never on the wire.
+4. **Read (gated).** `GET /api/records/:tokenId/file?viewer=X` runs `eth_call
+   viewRecord(tokenId) { from: viewer }` **before touching disk** (`server/src/middleware/consentGate.js`
+   — the contract answers, the server never guesses). Only on a returned CID does it
+   unseal the key and return `{ ciphertext, contentKey }` for local WebCrypto decryption.
+   If the chain knows the record but this machine holds no bytes (e.g. minted
+   elsewhere), the API answers `409 BlobMissing` — by design, not a bug.
+5. **Verify (free).** `POST /api/verify` re-runs `verifyRecord` and compares digests; it
+   never returns a file.
+
+> Render's free disk is **ephemeral**: `server/uploads/*.enc|*.key` are wiped on every
+> redeploy. Use a persistent disk (`UPLOAD_DIR=/opt/data/uploads`) or accept re-uploads
+> after each deploy.
+
 ### Environment
 
-`server/.env`
+`server/.env` — copy from `server/.env.example` and fill in `GEMINI_API_KEY` and
+`MASTER_KEY`:
 
 ```env
 PORT=5000
-DATABASE_URL=mongodb://localhost:27017/aarogyachain   # optional
+DATABASE_URL=                           # optional — blank means "rebuild from the chain"
+GEMINI_API_KEY=                         # server-side only, never in the client bundle
+GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL_FALLBACKS=gemini-3.1-pro-preview,gemini-3.5-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite
+MASTER_KEY=                             # 64 hex chars, seals each record's content key
 
 SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 CONTRACT_ADDRESS=0x464e6963cE0D833193C83Fc8Bd081614B9344b03
 CONTRACT_DEPLOY_BLOCK=11714309
-
-GEMINI_API_KEY=          # server-side only
-GEMINI_MODEL=gemini-3.8-flash
-MASTER_KEY=              # 64 hex chars, seals each record's content key
+AI_VIEWER_ADDRESS=0x000000000000000000000000000000000000A1A1
 ```
 
-`client/.env`
+`client/.env` — only needed if you point the site at a different API or contract
+(the committed defaults already target local API + the deployed Sepolia contract):
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_CONTRACT_ADDRESS=0x464e6963cE0D833193C83Fc8Bd081614B9344b03
 VITE_CHAIN_ID=11155111
+VITE_AI_VIEWER_ADDRESS=0x000000000000000000000000000000000000A1A1
 ```
+
+> Vite bakes `VITE_*` values in at **build** time, so changing them means rebuilding
+> (locally: restart `npm run dev:client`).
 
 ---
 
@@ -229,8 +313,10 @@ none of this is hardcoded into the role logic.
 | Patient | Patient 101 | `0xaC0b57F1bAc3964f13a1b232fB73B553F24Ec51B` |
 
 There is **no login page and no test password** — the wallet is the identity. Connect
-MetaMask to Sepolia and the correct console is offered to you. The `/verify` and
-`/auditor` pages work with no wallet at all.
+MetaMask to Sepolia and the correct console is offered to you. `/verify` works with
+no wallet at all, and **View demo** on `/access` opens every console wallet-free
+— the demo accounts' addresses are shown on the home page, and roles are still read
+live from the contract.
 
 ---
 
@@ -257,12 +343,13 @@ connects, and shows only the console that wallet's role entitles it to.
 
 ### Display names, and where they come from
 
-The contract records that a wallet is `Patient 101` and owns token 3. It never learns a
-name — that is deliberate, and it is why the design can claim no personal data on-chain.
+The contract records that a wallet is `Patient 101` and owns its tokens. It never learns
+a name — that is deliberate, and it is why the design can claim no personal data on-chain.
 
 So names live in a separate **patient-owned profile**: off-chain, writable only by the
-wallet it belongs to, and proved by a **signature** rather than a session. That has three
-consequences worth understanding before a judge asks:
+wallet it belongs to, and proved by a **signature** rather than a session (the server
+rejects signatures older than five minutes, so a captured one cannot be replayed).
+That has three consequences worth understanding before a judge asks:
 
 - A forged profile is worthless. Rewrite every name in the database and ownership, consent
   and verification are all unchanged.
@@ -317,18 +404,31 @@ answer.
 ## Repository layout
 
 ```
-contracts/AarogyaChain.sol      the deployed contract, as source
-client/                         React 18 + Vite + Tailwind + ethers v6
+contracts/AarogyaChain.sol      the deployed contract, as source (Solidity 0.8.24, ERC-721 + AccessControl, ERC-5192 soulbound)
+client/                         React 18 + Vite 6 + Tailwind 3 + ethers v6
+  src/App.jsx                   routes: / · /access · /verify · /ai · /admin · /doctor · /auditor · /patient (+ consoles)
   src/chain.jsx                 ALL ethers lives here — pages never touch it
+  src/contract.js               contract address, chain id, API URL, AI viewer address (VITE_* env)
   src/crypto.js                 browser-side AES-256-GCM + keccak256
   src/services/api.js           the only place that calls the backend
-  src/pages/                    one console per role, plus verify and AI
+  src/config/demoAccounts.js    demo personas (convenience only — roles always come from the contract)
+  src/pages/                    Home, Access gate, Verify, Ai, Profile + one console per role
+  src/pages/dashboards/         read-only dashboard per role
+  src/components/shell/         AppShell, RoleGate (contract-read role gate), DemoBanner, PublicChrome
+  src/components/viz/           charts, lifecycle diagram, stat/table primitives
+  vercel.json                   SPA rewrites so /access · /admin · /verify survive refresh
 server/                         Express 4 + Mongoose 8
-  src/middleware/consentGate.js THE GATE — asks the contract, never guesses
+  src/index.js                  entry — `node src/index.js`, CORS open, 30 MB JSON ceiling for ciphertext
+  src/routes/apiRoutes.js       /api/health · /api/chain/* · /api/records* · /api/ai/* · /api/audit/:id · /api/verify · /api/stats · /api/profiles*
+  src/middleware/consentGate.js THE GATES — requireConsent + requireAiConsent, both eth_calls, never guesses
+  src/controllers/              health, chain, stats, records, AI, profiles
   src/services/chain.js         read-only chain access; no signer exists here
-  src/services/gemini.js        structured-output call to Gemini
-  src/services/storage.js       ciphertext blobs + content-key sealing
-  src/scripts/indexer.js        rebuild the Mongo cache from chain logs
+  src/services/gemini.js        structured-output call to Gemini (primary + fallbacks, retryable 429/5xx)
+  src/services/storage.js       ciphertext blobs + content-key sealing (AES-256-GCM, UPLOAD_DIR-aware)
+  src/scripts/indexer.js        `npm run index` — rebuild the Mongo cache from chain logs
+  src/scripts/ping.js           `npm run ping` — connection, host, collections, doc counts
+render.yaml                     Render blueprint: aarogyachain-api (Root server, health check /api/health)
+package.json                    root scripts: dev:client · dev:server · start:server · build:client · index · ping
 ```
 
 ---
@@ -378,3 +478,62 @@ The AI key is server-side only. Confirm it is not in the browser bundle:
 ```bash
 grep -r "AIza" client/dist   # no output
 ```
+
+---
+
+## Deploying (Vercel + Render)
+
+Two services, deployed separately: the **API** on Render, the **site** on Vercel.
+
+### 1. API on Render (free, no card)
+
+Use **New → Web Service** — *not* Blueprint (`render.yaml` exists in the repo but
+Blueprint mode asks for a credit card).
+
+| Setting | Value |
+|---|---|
+| Root Directory | `server` |
+| Build Command | `npm install` |
+| Start Command | `node src/index.js` |
+| Instance Type | **Free** |
+| Health Check Path | `/api/health` |
+
+Then set the environment variables (copy non-secret values from
+`server/.env.example`):
+
+- `DATABASE_URL`, `MASTER_KEY`, `GEMINI_API_KEY` — paste your secrets
+- `GEMINI_MODEL=gemini-3.6-flash`,
+  `GEMINI_MODEL_FALLBACKS=gemini-3.1-pro-preview,gemini-3.5-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite`
+- `SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com`,
+  `CONTRACT_ADDRESS=0x464e6963cE0D833193C83Fc8Bd081614B9344b03`,
+  `CONTRACT_DEPLOY_BLOCK=11714309`,
+  `AI_VIEWER_ADDRESS=0x000000000000000000000000000000000000A1A1`
+
+Two free-tier caveats: the service **sleeps after 15 min idle** (warm it by hitting
+`/api/health` before demoing), and its disk is **ephemeral** (uploads vanish on
+redeploy — see the storage section). If Atlas is used, add `0.0.0.0/0` to
+**Network Access** so Render can reach it.
+
+### 2. Site on Vercel
+
+| Setting | Value |
+|---|---|
+| Root Directory | `client` |
+| Framework | Vite |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+Environment variables:
+
+```env
+VITE_API_URL=https://<your-render-service>.onrender.com/api
+VITE_CONTRACT_ADDRESS=0x464e6963cE0D833193C83Fc8Bd081614B9344b03
+VITE_CHAIN_ID=11155111
+VITE_AI_VIEWER_ADDRESS=0x000000000000000000000000000000000000A1A1
+```
+
+> Vite bakes `VITE_*` in at build time, so **updating an env var requires a
+> redeploy**: Dashboard → Settings → Environment Variables → edit → Save →
+> Deployments → ⋯ → Redeploy. (CLI: `vercel env add VITE_API_URL production`
+> then `vercel --prod`.) `client/vercel.json` already handles SPA rewrites, so
+> `/access`, `/admin` and `/verify` survive refresh.
