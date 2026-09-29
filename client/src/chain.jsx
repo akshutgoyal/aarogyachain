@@ -23,9 +23,20 @@ import React, {
 import { BrowserProvider, Contract, Interface, getAddress, isAddress } from 'ethers';
 import { ABI, CONTRACT_ADDRESS, CHAIN_ID } from './contract';
 import { chainPermissions, recordsByOwner } from './services/api';
+import { DEMO_ACCOUNTS } from './config/demoAccounts';
 
 const CONTRACT_INTERFACE = new Interface(ABI);
 const POLL_MS = 12_000;
+
+// Demo mode: a walletless walkthrough. The persona key survives reloads within
+// the tab (sessionStorage, never localStorage) so a refresh keeps you in demo
+// but a new tab starts clean.
+const DEMO_KEY = 'aarogyachain-demo-role';
+
+/** Demo persona address for a role key (admin/doctor/auditor/patient). */
+export function demoAddressFor(role) {
+  return DEMO_ACCOUNTS.find((entry) => entry.role === role)?.address || null;
+}
 
 export const hasWallet = () => typeof window !== 'undefined' && Boolean(window.ethereum);
 
@@ -154,6 +165,15 @@ export function ChainProvider({ children }) {
   const [refreshing, setRefreshing] = useState(false);
   const [walletError, setWalletError] = useState(null);
   const [readReady, setReadReady] = useState(false);
+  // Null normally; the role key while demoing a persona (admin/doctor/auditor/patient).
+  const [demoRole, setDemoRole] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(DEMO_KEY);
+      return saved || null;
+    } catch {
+      return null;
+    }
+  });
 
   const providerRef = useRef(null);
   const accountRef = useRef(null);
@@ -200,6 +220,10 @@ export function ChainProvider({ children }) {
   /**
    * Refresh everything that can change when the user switches accounts.
    * Roles come from the contract; "patient" comes from actually owning a token.
+   *
+   * In demo mode the wallet is absent, so roles come from the backend's
+   * chainPermissions (same contract read, no signer) and patient-ness from
+   * actual on-chain ownership — the persona's real state, not a flag.
    */
   const refresh = useCallback(
     async (address) => {
@@ -215,30 +239,46 @@ export function ChainProvider({ children }) {
       setRefreshing(true);
       try {
         const provider = getReadProvider();
-        if (provider) {
+
+        if (demoRole && !provider) {
+          // Walletless demo: same contract reads, via the backend's public RPC.
+          const info = await chainPermissions(target);
+          setChainId(CHAIN_ID);
+          setReadReady(true);
+          setRoles({
+            admin: info.roles.admin,
+            manager: info.roles.manager,
+            auditor: info.roles.auditor,
+          });
+          setIdentity({ label: info.identity.label, active: info.identity.active });
+          setDid(info.did || '');
+        } else if (provider) {
           const network = await provider.getNetwork();
           setChainId(Number(network.chainId));
           setReadReady(true);
-        }
 
-        // Roles: one authoritative source, the contract.
-        const contract = await readContract();
-        if (contract) {
-          const [adminRole, managerRole, auditorRole] = await Promise.all([
-            contract.DEFAULT_ADMIN_ROLE(),
-            contract.MANAGER_ROLE(),
-            contract.AUDITOR_ROLE(),
-          ]);
-          const [isAdmin, isManager, isAuditor, record, didString] = await Promise.all([
-            contract.hasRole(adminRole, target),
-            contract.hasRole(managerRole, target),
-            contract.hasRole(auditorRole, target),
-            contract.identities(target),
-            contract.didFor(target),
-          ]);
-          setRoles({ admin: isAdmin, manager: isManager, auditor: isAuditor });
-          setIdentity({ label: record[0], active: record[2] });
-          setDid(didString);
+          // Roles: one authoritative source, the contract.
+          const contract = await readContract();
+          if (contract) {
+            const [adminRole, managerRole, auditorRole] = await Promise.all([
+              contract.DEFAULT_ADMIN_ROLE(),
+              contract.MANAGER_ROLE(),
+              contract.AUDITOR_ROLE(),
+            ]);
+            const [isAdmin, isManager, isAuditor, record, didString] = await Promise.all([
+              contract.hasRole(adminRole, target),
+              contract.hasRole(managerRole, target),
+              contract.hasRole(auditorRole, target),
+              contract.identities(target),
+              contract.didFor(target),
+            ]);
+            setRoles({ admin: isAdmin, manager: isManager, auditor: isAuditor });
+            setIdentity({ label: record[0], active: record[2] });
+            setDid(didString);
+          }
+        } else {
+          // Neither a wallet nor a demo persona can resolve this address.
+          return;
         }
 
         // The patient role is ownership, not a role grant — so ask the backend.
@@ -254,7 +294,7 @@ export function ChainProvider({ children }) {
         setRefreshing(false);
       }
     },
-    [getReadProvider, readContract]
+    [demoRole, getReadProvider, readContract]
   );
 
   const readAccounts = useCallback(async () => {
@@ -341,7 +381,21 @@ export function ChainProvider({ children }) {
   }, []);
 
   // Attach on mount, and keep re-reading whenever the world might have moved.
+  // In demo mode there is no wallet to listen to, so just load the persona once
+  // and poll the backend for fresh chain state.
   useEffect(() => {
+    if (demoRole) {
+      const address = demoAddressFor(demoRole);
+      if (address) {
+        accountRef.current = address;
+        setAccount(address);
+        setChainId(CHAIN_ID);
+        refresh(address);
+      }
+      const timer = setInterval(() => refresh(), POLL_MS);
+      return () => clearInterval(timer);
+    }
+
     if (!hasWallet()) return undefined;
 
     syncAccounts();
@@ -386,7 +440,7 @@ export function ChainProvider({ children }) {
       account,
       availableAccounts,
       chainId,
-      wrongNetwork: chainId !== null && chainId !== CHAIN_ID,
+      wrongNetwork: !demoRole && chainId !== null && chainId !== CHAIN_ID,
       connecting,
       refreshing,
       walletError,
@@ -395,6 +449,38 @@ export function ChainProvider({ children }) {
       requestAccountSwitch,
       switchNetwork,
       refresh,
+      // demo walkthrough — a walletless persona, not an account
+      demoRole,
+      isDemo: Boolean(demoRole),
+      demoAddress: demoRole ? demoAddressFor(demoRole) : null,
+      enterDemo: async (role) => {
+        try {
+          sessionStorage.setItem(DEMO_KEY, role);
+        } catch {
+          /* private mode — demo still works for this load */
+        }
+        setDemoRole(role);
+        const address = demoAddressFor(role);
+        accountRef.current = address;
+        setAccount(address);
+        setChainId(CHAIN_ID);
+        await refresh(address);
+      },
+      exitDemo: () => {
+        try {
+          sessionStorage.removeItem(DEMO_KEY);
+        } catch {
+          /* ignore */
+        }
+        setDemoRole(null);
+        accountRef.current = null;
+        setAccount(null);
+        setRoles({ admin: false, manager: false, auditor: false });
+        setIdentity({ label: '', active: false });
+        setDid('');
+        setOwnedRecords([]);
+        setWalletError(null);
+      },
       // identity, all read from the chain
       roles,
       identity,
@@ -414,6 +500,7 @@ export function ChainProvider({ children }) {
       availableAccounts,
       chainId,
       connecting,
+      demoRole,
       refreshing,
       walletError,
       requestAccountSwitch,

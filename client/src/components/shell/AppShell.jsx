@@ -3,6 +3,7 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useChain, shortAddress } from '../../chain';
 import { ROLES, CONTRACT_ADDRESS, EXPLORER } from '../../contract';
 import StatusBanner from '../StatusBanner';
+import DemoBanner from './DemoBanner';
 
 // Application shell, shown ONLY inside a role's own console.
 //
@@ -73,7 +74,8 @@ function NavItem({ item, onNavigate }) {
 }
 
 export default function AppShell({ children }) {
-  const { account, primaryRole, identity, roles, isPatient, refresh, refreshing } = useChain();
+  const { account, primaryRole, identity, roles, isPatient, isDemo, exitDemo, refresh, refreshing } =
+    useChain();
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -194,14 +196,23 @@ export default function AppShell({ children }) {
               <Link
                 to="/access"
                 className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white py-1 pl-1 pr-2.5 hover:border-teal-300"
-                title="Switch wallet — re-enter with a different account"
+                title={
+                  isDemo
+                    ? 'Exit demo or switch persona'
+                    : 'Switch wallet — re-enter with a different account'
+                }
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-50 text-[11px] font-bold text-teal-700">
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded-md text-[11px] font-bold ${
+                    isDemo ? 'bg-amber-100 text-amber-700' : 'bg-teal-50 text-teal-700'
+                  }`}
+                >
                   {(identity.label || account).slice(0, 1).toUpperCase()}
                 </span>
                 <span className="hidden text-left sm:block">
                   <span className="block text-[11px] font-medium leading-tight text-slate-800">
                     {identity.label || 'Unregistered'}
+                    {isDemo && <span className="ml-1 text-amber-700">· demo</span>}
                   </span>
                   <span className="mono block text-[10px] leading-tight text-slate-400">
                     {shortAddress(account)}
@@ -218,7 +229,10 @@ export default function AppShell({ children }) {
 
         <StatusBanner />
 
-        <main className="min-w-0 flex-1 p-4 lg:p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-4 lg:p-6">
+          {isDemo && <DemoBanner onExit={exitDemo} />}
+          {children}
+        </main>
       </div>
     </div>
   );

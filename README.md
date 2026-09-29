@@ -243,7 +243,7 @@ connects, and shows only the console that wallet's role entitles it to.
 | Route | Who | What it does |
 |---|---|---|
 | `/` | anyone | Landing page. The only way in is the **Access Dashboard** button, top right |
-| `/access` | anyone | The auth screen. Connects MetaMask, reads the wallet's role from the contract, and routes it to the one console it holds |
+| `/access` | anyone | The auth screen. Connects MetaMask, reads the wallet's role from the contract, and routes it to the one console it holds. **View demo** below the connect button opens every console wallet-free (see below) |
 | `/verify` | public | Re-hash a file and compare with the chain. **No wallet, no account** |
 | `/ai` | public | The two tiers of AI use, and a live allow/deny demonstration |
 | `/admin` | Hospital IT | Dashboard: identities by role, records by type, consent health, activity, and the identity table |
@@ -270,6 +270,23 @@ consequences worth understanding before a judge asks:
   crypto-shredding covers the record, this covers the name.
 - Wherever a name appears, the UI labels it **off-chain**, so the provenance is never
   glossed over.
+
+### Demo mode (no wallet needed)
+
+Below the connect button on `/access`, **View demo** opens a persona picker with the
+four roles. Picking one loads that account's *real* chain state — roles, ownership,
+consent windows — through the backend's public RPC, with no signer attached:
+
+- Dashboards, tables, charts, the verifier and Gemini explanations all work, because
+  they are reads.
+- Anything that writes (minting, granting, revoking, signing a profile) refuses,
+  because there is no wallet to sign with. The amber banner inside the shell says so
+  on every page.
+- Each persona is still gated to its own console — demoing the patient never shows
+  the admin sidebar. The picker on `/access` lets you switch persona at any time.
+
+The choice survives reloads within the tab (session storage) but never leaves it:
+a fresh tab starts clean, and nothing about demo mode weakens the real gate.
 
 ---
 

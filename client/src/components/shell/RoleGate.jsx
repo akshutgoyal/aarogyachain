@@ -7,10 +7,11 @@ import { Card, Callout } from '../ui';
 /**
  * Gate a console behind the role the contract says this wallet holds.
  *
- * Two outcomes:
- *   - no wallet connected      -> the /access auth screen, with where they were headed
- *   - wallet without the role  -> the console they DO hold, with a reason
- *   - wallet with the role     -> render
+ * Three ways through:
+ *   - a connected wallet holding the role      -> render
+ *   - a demo persona holding the role          -> render (reads only; writes refuse)
+ *   - neither                                  -> /access, with where they were headed
+ *   - wallet/persona holding a DIFFERENT role  -> the console they DO hold
  *
  * The role is never taken from the URL or from storage, so a bookmarked link cannot
  * put someone into a console they are not entitled to see.
