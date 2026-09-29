@@ -3,7 +3,7 @@ import React from 'react';
 // Visual primitives shared by every dashboard. Kept dumb and presentational so a
 // dashboard file reads as layout, not as styling.
 
-export const CHART_COLORS = ['#0d9488', '#6366f1', '#f59e0b', '#e11d48', '#8b5cf6', '#0ea5e9'];
+export const CHART_COLORS = ['#0d9488', '#14b8a6', '#0f766e', '#2dd4bf', '#5eead4', '#99f6e4'];
 
 export function StatCard({ label, value, hint, tone = 'default', delta }) {
   const tones = {

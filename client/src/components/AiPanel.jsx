@@ -167,7 +167,7 @@ export default function AiPanel({ tokenId, isOwner = false }) {
                 type="button"
                 onClick={grantAiConsent}
                 disabled={isBusy(`grant AI consent #${tokenId}`)}
-                className="btn-primary bg-violet-600 hover:bg-violet-700 focus:ring-violet-500/40"
+                className="btn-primary bg-teal-600 hover:bg-teal-700 focus:ring-teal-500/40"
               >
                 {isBusy(`grant AI consent #${tokenId}`) ? (
                   <Busy label="Confirming…" />
@@ -231,7 +231,7 @@ export default function AiPanel({ tokenId, isOwner = false }) {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-sky-200 bg-sky-50/50 p-3.5">
+          <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-3.5">
             <p className="text-xs font-semibold text-slate-800">Explain the access history</p>
             <p className="mt-1 text-[11px] leading-relaxed text-slate-600">
               Who accessed this record, when, and who can read it now. Built from{' '}
@@ -242,7 +242,7 @@ export default function AiPanel({ tokenId, isOwner = false }) {
               type="button"
               onClick={explainHistory}
               disabled={loadingHistory || loadingSummary || !viewer}
-              className="btn-secondary mt-2.5 w-full border-sky-300 text-sky-800 hover:bg-sky-50"
+              className="btn-secondary mt-2.5 w-full border-teal-300 text-teal-800 hover:bg-teal-50"
             >
               {loadingHistory ? <Busy label={`Calling Gemini… ${elapsed}s`} /> : 'Explain the access history'}
             </button>

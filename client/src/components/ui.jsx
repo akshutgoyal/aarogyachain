@@ -6,7 +6,7 @@ export function Card({ title, subtitle, right, children, className = '', tone = 
     warn: 'border-amber-200 bg-amber-50/60',
     danger: 'border-rose-200 bg-rose-50/60',
     ok: 'border-emerald-200 bg-emerald-50/60',
-    info: 'border-sky-200 bg-sky-50/60',
+    info: 'border-teal-200 bg-teal-50/60',
     ai: 'border-violet-200 bg-violet-50/60',
   };
   return (
@@ -109,7 +109,7 @@ export function EmptyState({ title, hint, action }) {
 
 export function Callout({ tone = 'info', title, children, className = '' }) {
   const tones = {
-    info: 'border-sky-200 bg-sky-50 text-sky-900',
+    info: 'border-teal-200 bg-teal-50 text-teal-900',
     warn: 'border-amber-200 bg-amber-50 text-amber-900',
     danger: 'border-rose-200 bg-rose-50 text-rose-900',
     ok: 'border-emerald-200 bg-emerald-50 text-emerald-900',

@@ -100,7 +100,7 @@ export default function DoctorDashboard() {
     <div className="space-y-5">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-700">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-700">
             Clinician · Manager role
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
@@ -280,7 +280,7 @@ export default function DoctorDashboard() {
               label: '',
               align: 'right',
               render: () => (
-                <Link to="/doctor/console" className="text-[11px] font-medium text-indigo-700 underline">
+                <Link to="/doctor/console" className="text-[11px] font-medium text-teal-700 underline">
                   Open record →
                 </Link>
               ),

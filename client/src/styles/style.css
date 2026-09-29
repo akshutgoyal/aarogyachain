@@ -75,7 +75,7 @@
 
 @layer utilities {
   .bg-dots-light {
-    background-image: radial-gradient(rgba(19, 16, 34, 0.14) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(8, 28, 48, 0.14) 1px, transparent 1px);
     background-size: 22px 22px;
   }
 

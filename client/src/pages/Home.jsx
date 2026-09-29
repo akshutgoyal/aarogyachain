@@ -37,13 +37,13 @@ function RouteMap() {
       <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="0.4" />
       <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" />
       {ORBIT_ROUTES.map((d) => (
-        <path key={d} d={d} fill="none" stroke="rgba(140,130,255,0.65)" strokeWidth="0.5" className="route-dash" />
+        <path key={d} d={d} fill="none" stroke="rgba(16,185,129,0.65)" strokeWidth="0.5" className="route-dash" />
       ))}
       {ORBIT_NODES.map((node) =>
         node.center ? (
           <g key={node.label}>
-            <circle cx={node.x} cy={node.y} r="6.5" fill="#6c5ce7" />
-            <circle cx={node.x} cy={node.y} r="6.5" fill="none" stroke="rgba(108,92,231,0.5)" strokeWidth="1.6" />
+            <circle cx={node.x} cy={node.y} r="6.5" fill="#10b981" />
+            <circle cx={node.x} cy={node.y} r="6.5" fill="none" stroke="rgba(16,185,129,0.5)" strokeWidth="1.6" />
             <text x={node.x} y={node.y + 1.6} textAnchor="middle" fill="#fff" fontSize="4.4" fontWeight="700">
               ✚
             </text>
@@ -53,8 +53,8 @@ function RouteMap() {
           </g>
         ) : (
           <g key={node.label}>
-            <circle cx={node.x} cy={node.y} r="4.6" fill="#1c1830" stroke="rgba(255,255,255,0.35)" strokeWidth="0.5" />
-            <text x={node.x} y={node.y + 1.5} textAnchor="middle" fill="#cfc9ff" fontSize="3" fontWeight="700">
+            <circle cx={node.x} cy={node.y} r="4.6" fill="#0c2946" stroke="rgba(255,255,255,0.35)" strokeWidth="0.5" />
+            <text x={node.x} y={node.y + 1.5} textAnchor="middle" fill="#a7f3d0" fontSize="3" fontWeight="700">
               {node.tag}
             </text>
             <text x={node.x} y={node.y + 8.4} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="2.9" fontWeight="600">
@@ -72,10 +72,10 @@ function RouteMap() {
 
 function Kicker({ children, tone = 'grape' }) {
   const tones = {
-    grape: 'text-grape',
+    grape: 'text-teal-700',
     teal: 'text-teal-700',
     ink: 'text-ink-950',
-    coral: 'text-[#b3402a]',
+    coral: 'text-teal-800',
   };
   return (
     <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${tones[tone]}`}>{children}</p>
@@ -134,10 +134,10 @@ export default function Home() {
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"
-          style={{
+              style={{
             background:
-              'radial-gradient(46rem 26rem at 78% 10%, rgba(108,92,231,0.28), transparent 62%),' +
-              'radial-gradient(30rem 22rem at 12% 88%, rgba(255,138,112,0.12), transparent 60%)',
+              'radial-gradient(46rem 26rem at 78% 10%, rgba(16,185,129,0.22), transparent 62%),' +
+              'radial-gradient(30rem 22rem at 12% 88%, rgba(13,148,136,0.20), transparent 60%)',
           }}
         />
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 lg:grid-cols-[1fr_1.05fr]">
@@ -186,7 +186,7 @@ export default function Home() {
                 Contract · refuses
               </p>
               <p className="mt-1 text-[13px] font-medium text-white">
-                Window expired — <span className="text-coral">Expired()</span>, no read.
+                Window expired — <span className="text-emerald-300">Expired()</span>, no read.
               </p>
             </div>
             <RouteMap />
@@ -239,7 +239,7 @@ export default function Home() {
                     {card.who}
                   </span>
                   <div>
-                    <p className="font-mono text-[11px] font-bold text-grape">{card.n}</p>
+                    <p className="font-mono text-[11px] font-bold text-teal-700">{card.n}</p>
                     <p className="text-xs font-semibold text-ink-950/70">{card.place}</p>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export default function Home() {
               </div>
               <div className="mt-4 space-y-3">
                 <div className="flex gap-2.5">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-grape text-xs font-bold">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-ink-950">
                     P
                   </span>
                   <div className="rounded-2xl rounded-tl-md bg-white/10 px-3.5 py-2.5 text-[13px]">
@@ -281,7 +281,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex justify-end gap-2.5">
-                  <div className="rounded-2xl rounded-tr-md bg-grape px-3.5 py-2.5 text-[13px]">
+                  <div className="rounded-2xl rounded-tr-md bg-emerald-500 px-3.5 py-2.5 text-[13px] text-ink-950">
                     Window open. Timer is the contract's, not mine.
                   </div>
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-coral text-xs font-bold text-ink-950">
@@ -374,7 +374,7 @@ export default function Home() {
               {['Mint records (admin only)', 'Read with consent (doctor)', 'Audit metadata (auditor)'].map(
                 (item) => (
                   <p key={item} className="flex items-center gap-2.5 border-b border-white/5 py-2.5 text-[13px] text-white/75 last:border-0 last:pb-0">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-grape/30 text-[11px] font-bold text-[#cfc9ff]">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-emerald-500/25 text-[11px] font-bold text-emerald-200">
                       ✓
                     </span>
                     {item}
@@ -390,7 +390,7 @@ export default function Home() {
                 <span className="h-1.5 w-1.5 rounded-full bg-coral" /> Soulbound · unmovable
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-sky-300" /> Every event logged
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Every event logged
               </span>
             </div>
           </div>

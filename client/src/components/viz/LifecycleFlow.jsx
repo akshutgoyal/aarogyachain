@@ -68,7 +68,7 @@ const STEPS = [
 
 const ACTOR_TONE = {
   Admin: 'bg-teal-50 text-teal-700 ring-teal-200',
-  Manager: 'bg-indigo-50 text-indigo-700 ring-indigo-200',
+  Manager: 'bg-teal-50 text-teal-700 ring-teal-200',
   Patient: 'bg-violet-50 text-violet-700 ring-violet-200',
   Contract: 'bg-slate-100 text-slate-700 ring-slate-200',
   Anyone: 'bg-amber-50 text-amber-700 ring-amber-200',

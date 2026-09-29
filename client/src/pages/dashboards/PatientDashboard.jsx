@@ -183,7 +183,7 @@ export default function PatientDashboard() {
               };
             })}
             horizontal
-            colors={['#8b5cf6', '#0d9488', '#6366f1']}
+            colors={['#0d9488', '#14b8a6', '#0f766e']}
           />
         </ChartCard>
 

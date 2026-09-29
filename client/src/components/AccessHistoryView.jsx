@@ -31,7 +31,7 @@ export default function AccessHistoryView({ result, onClose }) {
       </div>
 
       {summary.plain_summary && (
-        <p className="mb-4 rounded-lg border border-sky-200 bg-white p-3.5 text-sm leading-relaxed text-slate-700">
+        <p className="mb-4 rounded-lg border border-teal-200 bg-white p-3.5 text-sm leading-relaxed text-slate-700">
           {summary.plain_summary}
         </p>
       )}
@@ -40,7 +40,7 @@ export default function AccessHistoryView({ result, onClose }) {
         <ol className="space-y-2.5">
           {summary.timeline.map((entry, index) => (
             <li key={index} className="flex gap-3">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-100 text-[10px] font-semibold text-sky-700">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-100 text-[10px] font-semibold text-teal-700">
                 {index + 1}
               </span>
               <div className="min-w-0">
