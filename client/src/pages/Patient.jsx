@@ -124,7 +124,7 @@ export default function Patient() {
       await tx.wait();
       await loadGrants();
     }, {
-      successDetail: 'AccessRevoked recorded. The same read now returns AccessDenied, and so does the AI.',
+      successDetail: 'AccessRevoked recorded. The same read now returns AccessDenied, and so does the AI summary.',
     });
 
   const openOwnRecord = (tokenId) =>
@@ -169,14 +169,14 @@ export default function Patient() {
       {ownedRecords.length === 0 ? (
         <EmptyState
           title="You do not own any records yet"
-          hint="An admin mints records to a patient wallet. If a record was issued to a different address, switch MetaMask account — your role is read from the chain, not chosen here."
+          hint="An admin mints records to a patient wallet. If a record was issued to a different address, switch the MetaMask account — your role is read from the chain, not chosen here."
         />
       ) : (
         <>
           <Card
             className="mb-5"
             title="Your records"
-            subtitle={`${ownedRecords.length} soulbound token(s) owned by this wallet`}
+            subtitle={`${ownedRecords.length} soulbound tokens owned by this wallet`}
           >
             <ul className="space-y-3">
               {ownedRecords.map((record) => (
@@ -188,11 +188,11 @@ export default function Patient() {
                     </span>
                     {record.locked && <Pill tone="slate">soulbound — cannot be transferred</Pill>}
                     <span className="ml-auto text-[11px] text-slate-500">
-                      minted in block {record.mintedAtBlock}
+                      Minted in block {record.mintedAtBlock}
                     </span>
                   </div>
                   <p className="mono mt-1.5 truncate text-slate-500">
-                    digest {record.recordHash}
+                    Digest {record.recordHash}
                   </p>
                   <div className="mt-2.5 flex flex-wrap gap-2">
                     <button
@@ -320,7 +320,7 @@ export default function Patient() {
               {grants.length > 0 && (
                 <Callout tone="info" className="mt-3">
                   Revoking is immediate and public. The moment it lands, the record read and the AI
-                  summary both answer with AccessDenied — there is no cache of permission to expire.
+                  summary both answer with AccessDenied — there is no cached permission to expire.
                 </Callout>
               )}
             </Card>
@@ -350,7 +350,7 @@ export default function Patient() {
             </pre>
           ) : (
             <Callout tone="warn" title="Released, but not text">
-              This record decrypted but is not readable text — most scans are images. Its digest can
+              This record was decrypted but is not readable text — most scans are images. Its digest can
               still be verified on the Verify page.
             </Callout>
           )}

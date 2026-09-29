@@ -67,7 +67,7 @@ export default function StatusBanner() {
         </span>
 
         <span className="hidden text-slate-400 sm:inline">|</span>
-        <span>chain id {CHAIN_ID}</span>
+        <span>Chain ID {CHAIN_ID}</span>
 
         <span className="hidden text-slate-400 sm:inline">|</span>
         <span>
@@ -75,7 +75,7 @@ export default function StatusBanner() {
           {api.state === 'checking'
             ? 'checking…'
             : api.state === 'ok'
-              ? `ok · token #${api.nextTokenId ?? '—'} next`
+              ? `ok · next token #${api.nextTokenId ?? '—'}`
               : 'unreachable'}
         </span>
 

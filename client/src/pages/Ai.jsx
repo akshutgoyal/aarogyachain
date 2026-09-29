@@ -33,10 +33,10 @@ export default function Ai() {
       <PageHeader
         eyebrow="Explanation layer"
         title="Gemini explains. It never decides."
-        lead="A patient who owns a record still cannot read an MRI. Ownership without comprehension is not sovereignty — so Gemini turns data into plain language. It runs off-chain, holds no key, writes no state, and cannot mint, grant or revoke anything."
+        lead="A patient who owns a record still cannot read an MRI. Ownership without comprehension is not sovereignty — so Gemini turns data into plain language. It runs off-chain, holds no key, writes no state, and cannot mint, grant, or revoke anything."
       />
 
-      <Callout tone="ai" className="mb-5" title="The model is used in two ways, with deliberately different privacy">
+      <Callout tone="ai" className="mb-5" title="The model is used in two ways, with deliberately different privacy implications">
         <p className="mt-1">
           Sending a medical record to a third-party model is a <em>new purpose</em>, and a new
           purpose needs its own consent. So the two uses are separated, and neither one lets the
@@ -45,7 +45,7 @@ export default function Ai() {
       </Callout>
 
       <div className="mb-5 grid gap-4 md:grid-cols-2">
-        <Card title="Tier A · explains the access history" tone="info">
+        <Card title="Tier A · Explains the access history" tone="info">
           <p className="mb-2 text-xs leading-relaxed text-slate-700">
             Who accessed this record, when, and who can read it now. Built from{' '}
             <strong>public chain metadata only</strong> — event names, addresses and timestamps.
@@ -57,9 +57,9 @@ export default function Ai() {
           </ul>
         </Card>
 
-        <Card title="Tier B · explains the record contents" tone="ai">
+        <Card title="Tier B · Explains the record contents" tone="ai">
           <p className="mb-2 text-xs leading-relaxed text-slate-700">
-            Turns the record into plain language, with the values it mentions and questions to ask a
+            It turns the record into plain language, with the values it mentions and questions to ask a
             clinician.
           </p>
           <ul className="space-y-1.5 text-[11px] leading-relaxed text-slate-600">
@@ -68,7 +68,7 @@ export default function Ai() {
               Needs <strong>two</strong> consents: you may read it, <em>and</em> the patient has
               authorised the AI as a viewer in its own right.
             </li>
-            <li>Free tier on synthetic data; the paid tier keeps content out of training.</li>
+            <li>Free tier uses synthetic data; the paid tier keeps content out of training.</li>
           </ul>
         </Card>
       </div>
@@ -105,7 +105,7 @@ export default function Ai() {
         />
       ) : (
         <>
-          <Card className="mb-5" title="Pick a record" subtitle="Both tiers run against it.">
+          <Card className="mb-5" title="Pick a record" subtitle="Both tiers run on it.">
             <div className="flex flex-wrap gap-1.5">
               {records.map((record) => (
                 <button
@@ -124,7 +124,7 @@ export default function Ai() {
             </div>
             {records[0] && (
               <p className="mono mt-2.5 break-all text-[10px] text-slate-400">
-                owner {records.find((r) => r.tokenId === tokenId)?.patient}
+                Owner {records.find((r) => r.tokenId === tokenId)?.patient}
               </p>
             )}
           </Card>

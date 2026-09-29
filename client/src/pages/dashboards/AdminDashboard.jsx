@@ -20,7 +20,7 @@ const QUICK_ACTIONS = [
   {
     to: '/admin/console',
     title: 'Mint a record',
-    detail: 'Encrypt a file in the browser, anchor its digest, and allocate the token to the patient.',
+    detail: 'Encrypt a file in the browser, anchor its digest, and assign the token to the patient.',
     gate: 'DEFAULT_ADMIN_ROLE',
     tone: 'teal',
   },
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
         <StatCard
           label="Distinct viewers"
           value={totals.distinctViewers}
-          hint="Wallets holding access right now"
+          hint="Wallets with access right now"
         />
         <StatCard
           label="Chain events"
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
                 sublabel={`${totals.activeConsents} / ${consentTotal}`}
               />
               <p className="mt-1.5 text-[10px] leading-relaxed text-slate-400">
-                Windows close on their own — the contract enforces expiry with nobody intervening.
+                Windows close on their own — the contract enforces expiry with no intervention needed.
               </p>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (
-                  <span className="text-slate-400">none</span>
+                  <span className="text-slate-400">None</span>
                 );
               },
             },
@@ -281,7 +281,7 @@ export default function AdminDashboard() {
       {/* --------------------------------------------------------- flow */}
       <Card
         title="Record lifecycle"
-        subtitle="Where the contract stops things — and the three exits that are the design working"
+        subtitle="Where the contract blocks actions — and the three exits that show the design working"
       >
         <LifecycleFlow />
       </Card>

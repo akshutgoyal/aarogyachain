@@ -212,7 +212,7 @@ export default function Home() {
                 n: '01 · Sealed here',
                 who: 'HI',
                 place: 'Hospital IT · encrypts & mints',
-                title: 'The file never travels raw',
+                title: 'The file never travels unencrypted',
                 body: 'The browser seals the scan with AES-256-GCM before anything leaves the tab. Only a 32-byte digest is anchored on-chain.',
               },
               {
@@ -227,7 +227,7 @@ export default function Home() {
                 who: 'CD',
                 place: 'Cardiology · reads in-window',
                 title: 'Same record, verified bytes',
-                body: 'The reader re-hashes what they receive against the chain. A match means these bytes are exactly what was registered.',
+                body: 'The reader rehashes what they receive and checks it against the on-chain digest. A match means these bytes are exactly what was registered.',
               },
             ].map((card) => (
               <div
@@ -302,7 +302,7 @@ export default function Home() {
           <div className="order-1 lg:order-2">
             <Kicker tone="ink">Can consent meet the moment?</Kicker>
             <div className="mt-3">
-              <Display>A hello from your doctor, exactly when allowed.</Display>
+              <Display>A message from your doctor, exactly when allowed.</Display>
             </div>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-950/70">
               Open a window for one clinician and one record — or let it lapse and watch the
@@ -429,7 +429,7 @@ export default function Home() {
                   body: 'Every window names its viewer, its record and its expiry.',
                   cardTag: 'WINDOW OPENED',
                   cardTitle: 'Cardiology · 60 seconds',
-                  cardBody: 'Viewer, record and expiry on record',
+                  cardBody: 'Viewer, record and expiry recorded on-chain',
                 },
                 {
                   n: '03',

@@ -81,7 +81,7 @@ export default function Auditor() {
         }
       />
 
-      <Callout tone="info" className="mb-5" title="Metadata only — deliberately">
+      <Callout tone="info" className="mb-5" title="Metadata only — by design">
         The auditor view returns the digest, the record type, the mint time and the owner. It never
         returns the file location, so there is no path from this page to the document. Solidity
         <span className="mono"> private </span>
@@ -122,25 +122,25 @@ export default function Auditor() {
                   <dl className="mt-2.5 grid gap-x-6 gap-y-2 sm:grid-cols-2">
                     <div className="min-w-0">
                       <dt className="text-[10px] uppercase tracking-wide text-slate-400">
-                        record digest
+                        Record digest
                       </dt>
                       <dd className="mono truncate text-slate-700">{record.recordHash}</dd>
                     </div>
                     <div className="min-w-0">
-                      <dt className="text-[10px] uppercase tracking-wide text-slate-400">owner</dt>
+                      <dt className="text-[10px] uppercase tracking-wide text-slate-400">Owner</dt>
                       <dd className="mono truncate text-slate-700">{record.patient}</dd>
                     </div>
                     <div className="min-w-0">
                       <dt className="text-[10px] uppercase tracking-wide text-slate-400">
-                        file location (CID)
+                        File location (CID)
                       </dt>
                       <dd className="text-xs text-rose-600">
-                        withheld — {audit?.fileReleased === false ? 'not released' : 'never returned'}
+                        Withheld — {audit?.fileReleased === false ? 'not released' : 'never returned'}
                       </dd>
                     </div>
                     <div className="min-w-0">
                       <dt className="text-[10px] uppercase tracking-wide text-slate-400">
-                        mint transaction
+                        Mint transaction
                       </dt>
                       <dd className="truncate text-xs">
                         <a

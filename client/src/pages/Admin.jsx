@@ -126,7 +126,7 @@ export default function Admin() {
   const revokeRecord = () =>
     run('Revoke record', async () => {
       const tokenId = Number(revokeId);
-      if (!Number.isInteger(tokenId) || tokenId <= 0) throw new Error('Enter a token id.');
+      if (!Number.isInteger(tokenId) || tokenId <= 0) throw new Error('Enter a token ID.');
       const contract = await writeContract();
       const tx = await contract.revokeRecord(tokenId);
       await tx.wait();
@@ -179,7 +179,7 @@ export default function Admin() {
 
       {account && !isAdmin && (
         <Callout tone="danger" className="mb-5" title="This wallet is not the admin">
-          You can still press Mint below. The transaction will revert with a missing-role error —
+          You can still press mint below. The transaction will revert with a missing-role error —
           the website will not stop you, because the website is not the gate. That failure is the
           demonstration.
         </Callout>
@@ -203,7 +203,7 @@ export default function Admin() {
                 onChange={(event) =>
                   setNewIdentity((c) => ({ ...c, label: event.target.value }))
                 }
-                placeholder="e.g. Cardiology"
+                placeholder="e.g., Cardiology"
               />
             </Field>
             <button
@@ -333,7 +333,7 @@ export default function Admin() {
           subtitle="Both are useful on stage. One is irreversible, the other just proves a point."
         >
           <div className="space-y-3">
-            <Field label="Token id">
+            <Field label="Token ID">
               <input
                 className="input"
                 value={revokeId}
@@ -407,7 +407,7 @@ export default function Admin() {
                     }
                     className="rounded border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-500 hover:bg-slate-50"
                   >
-                    copy
+                    Copy
                   </button>
                 </div>
               </li>
@@ -422,7 +422,7 @@ export default function Admin() {
         subtitle="Nobody maintains a log file. The chain is the log."
       >
         {events.length === 0 ? (
-          <EmptyState title="No events read yet" />
+          <EmptyState title="No events yet" />
         ) : (
           <ol className="space-y-2">
             {events.map((event) => (

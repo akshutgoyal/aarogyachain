@@ -19,8 +19,8 @@ export default function DemoBanner({ onExit }) {
         <p className="mt-0.5 text-xs leading-relaxed text-amber-800">
           Everything you see is live chain data for this persona. Reads, charts and
           explanations all work; anything that writes to the chain (minting, granting,
-          revoking, signing) will refuse, because there is no wallet to sign with.
-          Connect the real wallet to act.
+          revoking, signing) will be refused, because there is no wallet to sign with.
+          Connect a real wallet to act.
         </p>
       </div>
       <button type="button" onClick={onExit} className="btn-secondary shrink-0">

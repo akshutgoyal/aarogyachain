@@ -107,8 +107,8 @@ export default function DoctorDashboard() {
             Clinical workspace
           </h1>
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-600">
-            Every record below is filtered by what the contract says you may read. Nothing here is
-            cached permission — each row was checked against{' '}
+            Every record below is filtered by what the contract says you may read. No permission
+            here is cached — each row was checked against{' '}
             <span className="mono text-xs">canAccess</span> as this wallet.
           </p>
         </div>
@@ -125,10 +125,10 @@ export default function DoctorDashboard() {
           label="Readable right now"
           value={accessibleRecords.length}
           tone="teal"
-          hint={`of ${stats.totals.records} record(s) on the contract`}
+          hint={`of ${stats.totals.records} records on the contract`}
         />
         <StatCard
-          label="Patients on record"
+          label="Patients with records"
           value={patientsWithRecords.length}
           hint={`${patientsReachable.length} with a live window for you`}
         />
@@ -138,7 +138,7 @@ export default function DoctorDashboard() {
           tone={mine.expired.length > 0 ? 'amber' : 'default'}
           hint="Lapsed on their own — nothing to revoke"
         />
-        <StatCard label="Records by type" value={stats.recordsByType.length} hint="Distinct kinds issued" />
+        <StatCard label="Records by type" value={stats.recordsByType.length} hint="Distinct types issued" />
         <StatCard
           label="Chain events"
           value={stats.totals.events}
@@ -150,7 +150,7 @@ export default function DoctorDashboard() {
       <div className="grid gap-4 lg:grid-cols-3">
         <ChartCard
           title="My access right now"
-          subtitle="Readable against everything minted"
+          subtitle="Readable out of everything minted"
           right={
             <div className="w-36">
               <DonutLegend data={accessSplit} />
@@ -200,7 +200,7 @@ export default function DoctorDashboard() {
 
         <ChartCard
           title="Per-patient access"
-          subtitle="Readable against not-yet-authorised, per patient"
+          subtitle="Readable versus unauthorised, per patient"
           height={220}
         >
           <AccessBars
@@ -219,7 +219,7 @@ export default function DoctorDashboard() {
       <Card
         title="Patients and access"
         subtitle="Names come from patient-owned off-chain profiles; access comes from the contract"
-        right={<Pill tone="slate">{patientRows.length} patient(s)</Pill>}
+        right={<Pill tone="slate">{patientRows.length} patients</Pill>}
       >
         <DataTable
           rowKey={(row) => row.address}
@@ -235,7 +235,7 @@ export default function DoctorDashboard() {
                     {row.displayName ? (
                       <OffChainBadge />
                     ) : (
-                      <span className="text-[10px] text-slate-400">no profile set</span>
+                      <span className="text-[10px] text-slate-400">No profile set</span>
                     )}
                     <span className="mono text-[10px] text-slate-400">
                       {shortAddress(row.address)}
@@ -259,7 +259,7 @@ export default function DoctorDashboard() {
               label: 'Access state',
               render: (row) => {
                 if (row.state === 'readable')
-                  return <Pill tone="emerald">readable now</Pill>;
+                  return <Pill tone="emerald">Readable now</Pill>;
                 if (row.state === 'expired') return <Pill tone="amber">window expired</Pill>;
                 if (row.state === 'none') return <Pill tone="slate">no consent</Pill>;
                 return <span className="text-slate-400">—</span>;

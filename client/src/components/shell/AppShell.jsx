@@ -145,7 +145,7 @@ export default function AppShell({ children }) {
               {CONTRACT_ADDRESS}
             </a>
             <p className="mt-2 text-[10px] leading-relaxed text-slate-500">
-              Sepolia · read-only from the server. Every write is signed in your wallet.
+              Sepolia · reads via the server. Every write is signed in your wallet.
             </p>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function AppShell({ children }) {
               title="Re-read your role from the contract"
               className="hidden rounded-md border border-slate-200 px-2 py-1 text-[11px] text-slate-600 hover:bg-slate-50 sm:block"
             >
-              {refreshing ? 'reading…' : 'refresh'}
+              {refreshing ? 'Reading…' : 'Refresh'}
             </button>
 
             {account && (

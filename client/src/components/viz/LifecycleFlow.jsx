@@ -22,18 +22,18 @@ const STEPS = [
   {
     n: 3,
     title: 'Digest anchored',
-    detail: 'Only keccak256 of the ciphertext goes on-chain. The file never does.',
+    detail: 'Only keccak256 of the ciphertext goes on-chain. The file itself never does.',
     actor: 'Manager',
   },
   {
     n: 4,
-    title: 'Admin mints?',
+    title: 'Will the admin mint?',
     detail: 'requestRecord by the clinician, then mintRecord by the admin.',
     actor: 'Admin',
     decision: {
       question: 'DEFAULT_ADMIN_ROLE held?',
-      no: 'AccessControl missing-role revert — no token exists',
-      yes: 'Token minted to the PATIENT, not the hospital',
+      no: 'AccessControl revert for a missing role — no token exists',
+      yes: 'Token minted to the patient, not the hospital',
     },
   },
   {
@@ -56,7 +56,7 @@ const STEPS = [
   {
     n: 7,
     title: 'Digest matches?',
-    detail: 'Re-hash the file and compare with the chain. Free, and open to anyone.',
+    detail: 'Rehash the file and compare it with the on-chain digest. Free and open to anyone.',
     actor: 'Anyone',
     decision: {
       question: 'keccak256(file) == on-chain digest',

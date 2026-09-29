@@ -13,7 +13,7 @@ export default function AccessHistoryView({ result, onClose }) {
     <Card
       tone="info"
       title="Gemini's explanation of the access history"
-      subtitle={`${result.model} · ${result.eventsConsidered} event(s) considered${
+      subtitle={`${result.model} · ${result.eventsConsidered} events considered${
         result.cached ? ' · cached' : ''
       }`}
       right={
@@ -77,7 +77,7 @@ export default function AccessHistoryView({ result, onClose }) {
         </div>
 
         <div className="rounded-lg border border-slate-200 bg-white p-3">
-          <p className="text-[10px] uppercase tracking-wide text-slate-500">Worth noticing</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-500">Worth noting</p>
           {Array.isArray(summary.notable) && summary.notable.length > 0 ? (
             <ul className="mt-1 space-y-0.5">
               {summary.notable.map((item, index) => (
@@ -94,7 +94,7 @@ export default function AccessHistoryView({ result, onClose }) {
 
       <Callout tone="info" className="mt-4" title="What the model was given">
         {result.dataSentToModel}. This explanation therefore needs no extra consent: the data it
-        reasons over is already public on the ledger.
+        analyses is already public on the ledger.
         {summary.disclaimer && <span className="mt-1.5 block">{summary.disclaimer}</span>}
       </Callout>
     </Card>

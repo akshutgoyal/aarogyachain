@@ -20,8 +20,8 @@ import { Card, Callout, Spinner } from '../components/ui';
 
 const ROLE_BLURB = {
   admin: 'Hospital IT — full controls: identities, roles, records.',
-  doctor: 'Clinician — records and requests within live consent.',
-  auditor: 'Compliance — metadata and the event log, never a file.',
+  doctor: 'Clinician — handles records and requests under live consent.',
+  auditor: 'Compliance — metadata and the event log, never the file.',
   patient: 'Record owner — your records, your consent, your call.',
 };
 
@@ -201,7 +201,7 @@ export default function Access() {
                 </Callout>
               )}
               <p className="text-[11px] leading-relaxed text-slate-500">
-                This asks MetaMask to reveal the address — nothing is signed and nothing moves.
+                This asks MetaMask to reveal your address — nothing is signed and nothing moves.
               </p>
 
               {/* ------------------------------------------------ demo bypass */}
@@ -217,8 +217,8 @@ export default function Access() {
           ) : (
             <div className="space-y-3">
               {isDemo ? (
-                <Callout tone="warn" title={`Demoing as ${identity.label || (primaryRole ? ROLES[primaryRole].label : 'persona')}`}>
-                  Reads and charts below are that persona's live chain data. Switch persona
+                <Callout tone="warn" title={`Exploring as ${identity.label || (primaryRole ? ROLES[primaryRole].label : 'persona')}`}>
+                  Data and charts below are that persona's live chain data. Switch persona
                   below, or exit the demo to sign in with a real wallet.
                   <button type="button" onClick={exitDemo} className="btn-secondary mt-2 w-full">
                     Exit demo
@@ -254,7 +254,7 @@ export default function Access() {
                 // In demo the network question is moot (no wallet) and the role is
                 // always known — the persona WAS chosen. Just offer the console.
                 <Callout tone="ok" title={`${ROLES[primaryRole].label} console ready`}>
-                  {ROLE_BLURB[primaryRole]} You are exploring, not signed in — writes will refuse.
+                  {ROLE_BLURB[primaryRole]} You are exploring, not signed in — write actions will be refused.
                   <span className="mt-2 block">
                     <Link
                       to={ROLES[primaryRole].path}

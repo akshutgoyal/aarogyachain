@@ -152,9 +152,9 @@ export default function PatientDashboard() {
       </div>
 
       {activeHumans.length > 0 && (
-        <Callout tone="warn" title={`${activeHumans.length} wallet(s) can read your records right now`}>
+        <Callout tone="warn" title={`${activeHumans.length} wallets can read your records right now`}>
           That is because you allowed it. You can close any of these windows immediately from the
-          access console, and the contract will refuse their next read the moment it lands.
+          Patient console, and the contract will refuse their next read the moment it lands.
         </Callout>
       )}
 
@@ -215,7 +215,7 @@ export default function PatientDashboard() {
           )}
           <div className="mt-3">
             <Link to="/patient/console" className="btn-secondary w-full">
-              Open the access console
+              Open the Patient console
             </Link>
           </div>
         </Card>
@@ -241,7 +241,7 @@ export default function PatientDashboard() {
               value={consents.ai?.active ? 1 : 0}
               max={1}
               tone={consents.ai?.active ? 'violet' : 'slate'}
-              label="Authorised to explain record contents"
+              label="Authorised to explain the record contents"
               sublabel={consents.ai?.active ? 'Granted' : 'Not granted'}
             />
           </div>
@@ -267,7 +267,7 @@ export default function PatientDashboard() {
       <Card
         title="Your records"
         subtitle="Ownership read from ownerOf() on the contract"
-        right={<Pill tone="violet">{myRecords.length} token(s)</Pill>}
+        right={<Pill tone="violet">{myRecords.length} tokens</Pill>}
       >
         <DataTable
           rowKey={(row) => row.tokenId}
@@ -288,7 +288,7 @@ export default function PatientDashboard() {
                 return readers.length === 0 ? (
                   <span className="text-slate-400">only you</span>
                 ) : (
-                  <span className="tabular-nums text-amber-700">{readers.length} wallet(s)</span>
+                  <span className="tabular-nums text-amber-700">{readers.length} wallets</span>
                 );
               },
             },

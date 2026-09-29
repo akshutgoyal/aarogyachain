@@ -251,7 +251,7 @@ export default function AiPanel({ tokenId, isOwner = false }) {
           <div className="rounded-lg border border-violet-200 bg-violet-50/50 p-3.5">
             <p className="text-xs font-semibold text-slate-800">Explain the record contents</p>
             <p className="mt-1 text-[11px] leading-relaxed text-slate-600">
-              Turns the record into plain language. The file is <strong>decrypted and sent to the
+              It turns the record into plain language. The file is <strong>decrypted and sent to the
               model</strong>, so it needs the second consent above.
             </p>
             <button
@@ -284,7 +284,7 @@ export default function AiPanel({ tokenId, isOwner = false }) {
             refusal.code === 'AiConsentRequired'
               ? 'You may read this record — but nobody agreed to the model seeing it'
               : refusal.code === 'AI_NOT_CONFIGURED'
-                ? 'Both gates passed, but no API key is configured'
+                ? 'Both checks passed, but no API key is configured'
                 : `Refused: ${refusal.code}`
           }
         >

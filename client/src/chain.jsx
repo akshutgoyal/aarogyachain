@@ -135,7 +135,7 @@ function namedError(parsed) {
         code: parsed.name,
       };
     case 'RecordNotFound':
-      return { title: 'No such record', detail: 'That token id does not exist.', code: parsed.name };
+      return { title: 'No such record', detail: 'That token ID does not exist.', code: parsed.name };
     case 'IdentityNotFound':
       return {
         title: 'Identity not registered',

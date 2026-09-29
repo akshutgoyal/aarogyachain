@@ -160,7 +160,7 @@ export default function Profile() {
               className="input"
               value={form.displayName}
               onChange={(event) => setForm((c) => ({ ...c, displayName: event.target.value }))}
-              placeholder="e.g. Akshut Goyal"
+              placeholder="e.g., Akshut Goyal"
             />
           </Field>
 
@@ -197,7 +197,7 @@ export default function Profile() {
               className="input"
               value={form.emergencyContact}
               onChange={(event) => setForm((c) => ({ ...c, emergencyContact: event.target.value }))}
-              placeholder="e.g. Harsh Kumar · +91 …"
+              placeholder="e.g., Harsh Kumar · +91 …"
             />
           </Field>
 
@@ -207,7 +207,7 @@ export default function Profile() {
                 className="input min-h-[80px]"
                 value={form.allergies}
                 onChange={(event) => setForm((c) => ({ ...c, allergies: event.target.value }))}
-                placeholder="e.g. Penicillin, latex"
+                placeholder="e.g., Penicillin, latex"
               />
             </Field>
           </div>

@@ -90,7 +90,7 @@ export default function Verify() {
       <PageHeader
         eyebrow="Public utility"
         title="Verify a record without an account"
-        lead="Re-hash the file and compare it with the 32 bytes on-chain. A match means the file is exactly what was registered; a mismatch means it was altered, even by us. No wallet, no login, and nothing to trust but arithmetic."
+        lead="Rehash the file and compare it with the 32 bytes on-chain. A match means the file is exactly what was registered; a mismatch means it was altered, even by us. No wallet, no login, and nothing to trust but arithmetic."
       />
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -181,7 +181,7 @@ export default function Verify() {
             <Card>
               <EmptyState
                 title="No verdict yet"
-                hint="Drop a file, or use the buttons to compare the on-chain digest against itself and against a single altered bit."
+                hint="Drop a file, or use the buttons to compare the on-chain digest with itself and with a single altered bit."
               />
             </Card>
           )}
@@ -223,13 +223,13 @@ export default function Verify() {
                 <dl className="mt-4 space-y-2">
                   <div>
                     <dt className="text-[10px] uppercase tracking-wide text-slate-400">
-                      digest provided
+                      Digest provided
                     </dt>
                     <dd className="mono break-all text-slate-700">{result.provided}</dd>
                   </div>
                   <div>
                     <dt className="text-[10px] uppercase tracking-wide text-slate-400">
-                      digest on-chain
+                      Digest on-chain
                     </dt>
                     <dd className="mono break-all text-slate-700">{result.onChain}</dd>
                   </div>
@@ -260,7 +260,7 @@ export default function Verify() {
                 needs no permission — which is why it works on this page with no wallet connected.
               </li>
               <li>
-                <Pill tone="teal">current state</Pill> {records.length} record(s) on this contract
+                <Pill tone="teal">Current state</Pill> {records.length} records on this contract
                 are verifiable by anyone reading this page.
               </li>
             </ul>

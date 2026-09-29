@@ -87,7 +87,7 @@ export default function Doctor() {
   const emergencyAccess = () =>
     run('emergencyAccess', async () => {
       const tokenId = Number(breakGlass.tokenId);
-      if (!Number.isInteger(tokenId) || tokenId <= 0) throw new Error('Enter a token id.');
+      if (!Number.isInteger(tokenId) || tokenId <= 0) throw new Error('Enter a token ID.');
       if (!breakGlass.reason.trim()) throw new Error('Break-glass requires a stated reason.');
       const contract = await writeContract();
       const tx = await contract.emergencyAccess(tokenId, account, breakGlass.reason.trim());
@@ -195,7 +195,7 @@ export default function Doctor() {
           subtitle="Bypasses consent by design. One hour, one record, permanently logged."
         >
           <div className="space-y-3">
-            <Field label="Token id">
+            <Field label="Token ID">
               <input
                 className="input"
                 value={breakGlass.tokenId}
@@ -215,7 +215,7 @@ export default function Doctor() {
                 onChange={(event) =>
                   setBreakGlass((current) => ({ ...current, reason: event.target.value }))
                 }
-                placeholder="e.g. patient unconscious in A&E"
+                placeholder="e.g., patient unconscious in A&E"
               />
             </Field>
             <button
@@ -229,7 +229,7 @@ export default function Doctor() {
             <p className="text-[11px] leading-relaxed text-slate-600">
               This is the honest exception to patient control. It is capped at one hour and the
               EmergencyAccessUsed event names the clinician and the reason, so it is auditable even
-              though it is not consented.
+              though it is not based on consent.
             </p>
           </div>
         </Card>
@@ -237,7 +237,7 @@ export default function Doctor() {
 
       <Card
         title="Records you may currently read"
-        subtitle="Access is asked of the contract per record — never assumed from a role name."
+              subtitle="Access is checked with the contract per record — never assumed from a role name."
         right={loading ? <Spinner className="text-slate-400" /> : null}
       >
         {records.length === 0 && !loading && (
@@ -262,15 +262,15 @@ export default function Doctor() {
                   <span className="text-xs font-semibold text-slate-800">{record.recordType}</span>
                   {record.locked && <Pill tone="slate">soulbound</Pill>}
                   <span className="ml-auto text-[11px] text-slate-500">
-                    {allowed ? 'consent valid now' : 'no consent'}
+                    {allowed ? 'Consent valid now' : 'No consent'}
                   </span>
                 </div>
 
                 <p className="mono mt-1.5 truncate text-slate-500">
-                  digest {record.recordHash}
+                  Digest {record.recordHash}
                 </p>
                 <p className="mono mt-0.5 truncate text-slate-400">
-                  owner {record.patient}
+                  Owner {record.patient}
                 </p>
 
                 <div className="mt-2.5 flex flex-wrap gap-2">
@@ -332,7 +332,7 @@ function ReleasedRecord({ record, onClose }) {
       }
     >
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <ConsentTimer expiresAt={record.expiresAt} label="consent" />
+        <ConsentTimer expiresAt={record.expiresAt} label="Consent" />
         <Pill tone="slate">{record.recordType}</Pill>
         <Pill tone="slate">{formatBytes(record.byteLength)} ciphertext</Pill>
       </div>

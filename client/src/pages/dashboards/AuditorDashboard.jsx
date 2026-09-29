@@ -107,7 +107,7 @@ export default function AuditorDashboard() {
         <Callout tone="warn" title="This wallet does not hold AUDITOR_ROLE">
           The metadata below is public, because the chain is public. What the role gates is the
           contract's own <span className="mono">auditRecord</span> call — press it on any row and the
-          contract will refuse you.
+          contract will refuse the call.
         </Callout>
       )}
 
@@ -174,7 +174,7 @@ export default function AuditorDashboard() {
       <Card
         title="Record metadata"
         subtitle="Hash, type, time and owner. The file location is withheld by the contract."
-        right={<Pill tone="slate">{stats.records.length} record(s)</Pill>}
+        right={<Pill tone="slate">{stats.records.length} records</Pill>}
       >
         <DataTable
           rowKey={(row) => row.tokenId}
@@ -200,7 +200,7 @@ export default function AuditorDashboard() {
             {
               key: 'cid',
               label: 'File location',
-              render: () => <span className="text-rose-600">withheld</span>,
+              render: () => <span className="text-rose-600">Withheld</span>,
             },
             { key: 'mintedAtBlock', label: 'Block', align: 'right' },
             {
@@ -209,7 +209,7 @@ export default function AuditorDashboard() {
               align: 'right',
               render: (row) =>
                 opened[row.tokenId] ? (
-                  <span className="text-[10px] text-emerald-700">metadata returned ✓</span>
+                  <span className="text-[10px] text-emerald-700">Metadata returned ✓</span>
                 ) : (
                   <button
                     type="button"
@@ -217,7 +217,7 @@ export default function AuditorDashboard() {
                     disabled={busyToken === row.tokenId}
                     className="text-[11px] font-medium text-slate-600 underline"
                   >
-                    {busyToken === row.tokenId ? <Busy label="asking…" /> : 'call auditRecord'}
+                    {busyToken === row.tokenId ? <Busy label="Asking…" /> : 'Call auditRecord'}
                   </button>
                 ),
             },
